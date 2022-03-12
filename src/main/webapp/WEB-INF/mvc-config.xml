@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Uncomment and your base-package here:
+         <context:component-scan
+            base-package="org.springframework.samples.web"/>  -->
+	 <bean 
+class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"></bean><!-- 사용할 컨트롤러 url을 통해 선택 -->
+
+	<context:component-scan 
+		base-package="controller,dao,logic,model"></context:component-scan><!-- 자동생성할 클래스들의 패키지를 선언 -->
+
+	<bean id="dataSource" 
+	class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+		p:driverClassName="oracle.jdbc.driver.OracleDriver"
+		p:url="jdbc:oracle:thin:@127.0.0.1:1521/XE"
+		p:username="hr"
+		p:password="hr">
+	</bean>
+	<bean id="sqlSessionFactory" 
+	class="org.mybatis.spring.SqlSessionFactoryBean"
+		p:dataSource-ref="dataSource"
+		p:configLocation="classpath:mybatisConfig.xml">
+	</bean>
+	<bean id="sqlSession" 
+	class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory"/>
+	</bean>	
+
+    <mvc:annotation-driven />
+
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	        <!-- Example: a logical view name of 'showMessage' is mapped to '/WEB-INF/jsp/showMessage.jsp' -->
+	        <property name="prefix" value="/"/>
+	        <property name="suffix" value=".jsp"/>
+	</bean>
+	<mvc:annotation-driven /><!-- User의 어노테이션 동작시켜줌 출력해줌 -->
+</beans>

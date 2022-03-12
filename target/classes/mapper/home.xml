@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.home">
+	<!-- 내정보 수정을 위한 쿼리 -->
+	<update id="updateUser" parameterType="model.User">
+		update my_customers set pwd=#{pwd},addr=#{addr},
+		phone=#{phone},email=#{email},job=#{job} 
+		where id=#{id}
+	</update>
+	<!-- 내정보 유저정보를 가져오기위한 쿼리 -->
+	<select id="selectUserImpo" parameterType="String"
+	 resultType="model.User">
+		select * from my_customers where id=#{id}
+	</select>
+	<!-- 거래게시물 검색위한 쿼리 -->
+	<select id="findTrade" parameterType="String"
+		resultType="model.TradeBBS">
+	select * from trade_bbs 
+	where title like '%' || #{title} || '%'
+	</select>
+	<!-- 소통게시물 검색위한 쿼리 -->
+	<select id="findImage" parameterType="String"
+		resultType="model.ImageBBS">
+	select * from my_imagebbs 
+	where title like '%' || #{title} || '%'
+	</select>
+	<!-- 이미지 게시물 수정 쿼리 -->
+	<update id="updateTrade" parameterType="model.TradeBBS">
+		update trade_bbs set title=#{title},price=#{price},
+		content=#{content},image_name=#{image_name} where 
+		writing_id=#{writing_id} 
+	</update>
+	<!-- 거래게시물 삭제 쿼리 -->
+	<delete id="deleteTrade" parameterType="Integer">
+	delete from trade_bbs where writing_id=#{id}
+	</delete>
+	<!-- 거래게시판 상세조회 쿼리 -->
+	<select id="tradebbsDetail" parameterType="Integer"
+	resultType="model.TradeBBS">
+		select * from trade_bbs where writing_id=#{id}
+	</select>
+	<!-- 거래게시판 페이지를 계산하기 위한 쿼리 -->
+	<select id="tradecount" resultType="Integer">
+		select count(*) from trade_bbs
+	</select>
+	<!--  거래 게시판 목록을출력하기위한 쿼리 -->
+	<select id="tradeList" parameterType="model.Condition"
+	resultType="model.TradeBBS">
+		select writing_id,group_id,order_no,parent_id,register_date,
+		writer_name,image_name,password,title,price,content from 
+		(select img.*, rownum rn from
+		(select * from trade_bbs order by group_id desc, 
+		order_no asc) img) 
+		where rn between #{startRow} and #{endRow}
+	</select>
+	<!-- 거래답글을 위한 쿼리 -->
+	<update id="updateTradeOrderNum" parameterType="model.TradeBBS">
+		update trade_bbs set order_no = order_no +1 
+		where group_id = #{group_id} and order_no >= #{order_no}
+	</update>
+	<!-- 거래게시물 번호중 가장큰 번호를 찾는쿼리 이유는 이미지글번호 설정위해서 -->
+	<select id="maxTradeBBS" resultType="Integer">
+		select max(writing_id) from trade_bbs
+	</select>
+	<!-- 거래 게시물을 등록하기 위한 쿼리 -->
+	<insert id="writeTradeBBS" parameterType="model.TradeBBS">
+		insert into trade_bbs values(#{writing_id},#{group_id}
+		,#{order_no},#{parent_id},#{register_date},#{writer_name}
+		,#{image_name},#{password},#{title},#{price},#{content})
+	</insert>
+	<!-- 답글을 위한 쿼리 -->
+	<update id="updateOrderNum" parameterType="model.ImageBBS">
+		update my_imagebbs set order_no = order_no +1 
+		where group_id = #{group_id} and order_no >= #{order_no}
+	</update>
+	<!-- 이미지 게시물 수정 쿼리 -->
+	<update id="updateImg" parameterType="model.ImageBBS">
+		update my_imagebbs set title=#{title},email=#{email},
+		content=#{content},image_name=#{image_name} where 
+		writing_id=#{writing_id} 
+	</update>
+	<!-- 이미지게시물 삭제 쿼리 -->
+	<delete id="deleteImg" parameterType="Integer">
+	delete from my_imagebbs where writing_id=#{id}
+	</delete>
+	<!-- 이미지게시판 상세조회 쿼리 -->
+	<select id="imagebbsDetail" parameterType="Integer"
+	resultType="model.ImageBBS">
+		select * from my_imagebbs where writing_id=#{id}
+	</select>
+	<!-- 페이지를 계산하기 위한 쿼리 -->
+	<select id="imgcount" resultType="Integer">
+		select count(*) from my_imagebbs
+	</select>
+	<!--  이미지 게시판 목록을출력하기위한 쿼리 -->
+	<select id="imageList" parameterType="model.Condition"
+	resultType="model.ImageBBS">
+		select writing_id,group_id,order_no,parent_id,register_date,
+		writer_name,email,image_name,password,title,content from 
+		(select img.*, rownum rn from
+		(select * from my_imagebbs order by group_id desc, 
+		order_no asc) img) 
+		where rn between #{startRow} and #{endRow}
+	</select>
+	<!-- 이미지게시물 번호중 가장큰 번호를 찾는쿼리 이유는 이미지글번호 설정위해서 -->
+	<select id="maxImageBBS" resultType="Integer">
+		select max(writing_id) from my_imagebbs
+	</select>
+	<!-- 이미지 게시물을 등록하기 위한 쿼리 -->
+	<insert id="writeImageBBS" parameterType="model.ImageBBS">
+		insert into my_imagebbs values(#{writing_id},#{group_id}
+		,#{order_no},#{parent_id},#{register_date},#{writer_name}
+		,#{email},#{image_name},#{password},#{title},#{content})
+	</insert>
+	<!-- 상세조회할 게시물을 글번호로 찾기위한 쿼리 -->
+	<select id="selectDetail" parameterType="Integer" resultType="model.Bbs">
+		select * from my_bbs where seqno=#{seqno}
+	</select>
+	<!-- 페이지숫자를 만들기위해  게시물의 갯수를 조회하는 쿼리-->
+	<select id="selectBBSCount" resultType="Integer">
+		select count(*) from my_bbs
+	</select>
+	<!-- 게시물 목록에 나올 게시물들을 5개씩조회하는 쿼리 -->
+	<select id="readBBSList" parameterType="Integer" 
+	resultType="model.Bbs">
+		select seqno,title,id,register_date from 
+		(select rownum rn,seqno,title,id,register_date from 
+		(select seqno,title,id,register_date from my_bbs 
+		order by seqno desc)) 
+		where rn > (#{pageNUM}-1)*5 and 
+		rn <![CDATA[<]]> ((#{pageNUM}-1)*5 + 6)
+	</select>
+	<!-- 게시물 번호중 가장큰 번호를 찾는쿼리 이유는 게시물글번호 설정위해서 -->
+	<select id="maxseqno" resultType="Integer">
+		select max(seqno) from my_bbs
+	</select>
+	<!-- 게시물 정보를 넣는 쿼리 -->
+	<insert id="writeBBS" parameterType="model.Bbs">
+		insert into my_bbs values(#{seqno},#{title},
+		#{id},#{content},#{register_date})
+	</insert>
+	<!-- 중복검사쿼리 입력한 아이디로 검색결과 갯수가 있으면 중복으로 판단 -->
+	<select id="DUPcheck" parameterType="String" resultType="Integer">
+		select count(*) from my_customers where id=#{id}
+	</select>
+	<!-- 회원가입위한 쿼리 입력한 정보를 넣는다 -->
+	<insert id="entryUser" parameterType="model.User">
+		insert into my_customers values(#{id},#{pwd}
+		,#{name},#{addr},#{phone},#{gender},#{email},#{job})
+	</insert>
+	<!-- 로그인을 위한쿼리  입력한 아이디와 비밀번호로 정보를가져오고 객체에 넣는다 -->
+	<select id="selectUser" parameterType="model.Loginuser"
+	 resultType="model.User">
+		select * from my_customers where id=#{id} and pwd=#{pwd}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
