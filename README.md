@@ -1,1 +1,8 @@
-https://github.com/SuHwanYoon/Spring-Secondhand-MaketBBS/blob/master/%EC%9C%A4%EC%88%98%ED%99%98_Spring_JSP_%EC%A4%91%EA%B3%A0%EC%9E%A5%ED%84%B0%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98.pdf
+중고거래 어플리케이션
+
+1. 기술스택
+Java/ JSP/ Spring/ Apache Tomcat/ Oracle/ MyBatis/ Apache Maven/ CSS
+
+2. 개요
+JSP기반의 중고거래 어플리케이션 구현
+회원가입 및 로그인, 관리자로그인, 파일첨부 가능 게시판 CRUD, 게시판댓글&대댓글, 페이징처리, 상품검색 및 장바구니 기능 구현
